@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+		xmlns:soap12bind="http://schemas.xmlsoap.org/wsdl/soap12/"
+		xmlns:soapbind="http://schemas.xmlsoap.org/wsdl/soap/"
+		xmlns:tns="http://www.sample-package.org/userService"
+		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:xsd1="http://www.sample-package.org/userService"
+		name="UserService"
+		targetNamespace="http://www.sample-package.org/userService">
+	<types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+				xmlns:xs1="http://www.sample-package.org/userService"
+				targetNamespace="http://www.sample-package.org/userService"
+				attributeFormDefault="unqualified"
+				elementFormDefault="qualified">
+			<xs:complexType name="GetUsersResponse">
+				<xs:sequence>
+					<xs:element name="Users"
+							type="tns:User"
+							minOccurs="0"
+							maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="User">
+				<xs:sequence>
+					<xs:element name="name"
+							type="xs:string"/>
+					<xs:element name="lastname"
+							type="xs:string"/>
+					<xs:element name="phone"
+							type="xs:string"/>
+					<xs:element name="address"
+							type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="getByLastname">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="lastName"
+								type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getByLastnameResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="return"
+								type="tns:GetUsersResponse"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</types>
+	<message name="getByLastnameRequestMessage">
+		<part name="parameters"
+				element="tns:getByLastname"/>
+	</message>
+	<message name="getByLastnameResponseMessage">
+		<part name="parameters"
+				element="tns:getByLastnameResponse"/>
+	</message>
+	<portType name="UserServicePortType">
+		<operation name="getByLastname">
+			<input message="tns:getByLastnameRequestMessage"/>
+			<output message="tns:getByLastnameResponseMessage"/>
+		</operation>
+	</portType>
+	<binding name="UserServiceSoapBinding"
+			type="tns:UserServicePortType">
+		<soapbind:binding style="document"
+				transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="getByLastname">
+			<soapbind:operation style="document"
+					soapAction="http://www.sample-package.org/userService#UserService:getByLastname"/>
+			<input>
+				<soapbind:body use="literal"/>
+			</input>
+			<output>
+				<soapbind:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<binding name="UserServiceSoap12Binding"
+			type="tns:UserServicePortType">
+		<soap12bind:binding style="document"
+				transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="getByLastname">
+			<soap12bind:operation style="document"
+					soapAction="http://www.sample-package.org/userService#UserService:getByLastname"/>
+			<input>
+				<soap12bind:body use="literal"/>
+			</input>
+			<output>
+				<soap12bind:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="UserService">
+		<port name="UserServiceSoap"
+				binding="tns:UserServiceSoapBinding">
+			<documentation> 
+				<wsi:Claim xmlns:wsi="http://ws-i.org/schemas/conformanceClaim/"
+						conformsTo="http://ws-i.org/profiles/basic/1.1"/>
+			</documentation>
+			<soapbind:address location="http://localhost/test/ws/userService"/>
+		</port>
+		<port name="UserServiceSoap12"
+				binding="tns:UserServiceSoap12Binding">
+			<soap12bind:address location="http://localhost/test/ws/userService"/>
+		</port>
+	</service>
+</definitions>
